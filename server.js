@@ -54,7 +54,7 @@ app.get("/", (_req, res) => {
     </ul>
 
     <h2>WebSocket</h2>
-    <p>Connect via <code>wss://&lt;your-domain&gt;/</code> to receive random order status updates.</p>
+    <p>Connect via <code>wss://&lt;interviewapiserver-production.up.railway.app&gt;/</code> to receive random order status updates.</p>
 
     <h2>Notes</h2>
     <ul>

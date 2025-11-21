@@ -4,6 +4,17 @@ import { WebSocketServer } from "ws";
 const app = express();
 const port = process.env.PORT || 3000;
 
+// --- CORS middleware ---
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // --- In-memory orders ---
 const statuses = ["NEW", "PROCESSING", "SHIPPED", "CANCELLED"];
 const orders = Array.from({ length: 8 }).map((_, i) => ({
@@ -53,8 +64,33 @@ app.get("/", (_req, res) => {
       <li><strong>GET /meta</strong> — API metadata in JSON</li>
     </ul>
 
+    <h3>REST Response Format</h3>
+    <p><strong>GET /orders</strong> returns an array of order objects:</p>
+    <pre><code>[
+  { "id": 1, "status": "NEW" },
+  { "id": 2, "status": "PROCESSING" },
+  { "id": 3, "status": "SHIPPED" },
+  ...
+]</code></pre>
+
+    <p><strong>GET /meta</strong> returns API metadata:</p>
+    <pre><code>{
+  "name": "Orders Demo API",
+  "version": "1.0.0",
+  "endpoints": { ... },
+  "notes": [ ... ]
+}</code></pre>
+
     <h2>WebSocket</h2>
     <p>Connect via <code>wss://interviewapiserver-production.up.railway.app/</code> to receive random order status updates.</p>
+
+    <h3>WebSocket Message Format</h3>
+    <p>Each message is a JSON string containing a single order update:</p>
+    <pre><code>{ "id": 5, "status": "CANCELLED" }</code></pre>
+    <p>Updates are pushed every second with random status changes.</p>
+
+    <h2>Order Statuses</h2>
+    <p>Possible values: <code>NEW</code>, <code>PROCESSING</code>, <code>SHIPPED</code>, <code>CANCELLED</code></p>
 
     <h2>Notes</h2>
     <ul>
